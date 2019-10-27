@@ -6,6 +6,6 @@ class Game < ApplicationRecord
   accepts_nested_attributes_for :frames
 
   def frames_attributes=(frame_attributes)
-    #TODO: add logic to handle frame attributes.
+    RecalculateGameScoreService.new(self, frame_attributes['knocked_pins_count'])
   end
 end
