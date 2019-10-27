@@ -9,6 +9,7 @@ class RecalculateGameScoreService
 
   # @return [void]
   def perform
+    raise Error::IncorrectAttributeFormat, 'Incorrect format for `knocked_pins_number`, integer expected' unless knocked_pins_number.is_a? Integer
     raise Error::CompletedGameUpdateFailure, "Unable to update completed game id: #{game.id}" if game.completed?
 
     Frame.transaction do

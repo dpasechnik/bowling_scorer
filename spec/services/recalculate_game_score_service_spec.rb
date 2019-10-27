@@ -18,6 +18,14 @@ RSpec.describe RecalculateGameScoreService do
         end
       end
 
+      context 'when `knocked_pins_count` is not integer' do
+        let(:knocked_pins_number) { "1" }
+
+        it 'raises an exception' do
+          expect { subject }.to raise_error(described_class::Error::IncorrectAttributeFormat, /Incorrect format for `knocked_pins_number`, integer expected/)
+        end
+      end
+
       context 'when game is incomplete' do
         let!(:frame) { create :frame, :incomplete, game: game }
 

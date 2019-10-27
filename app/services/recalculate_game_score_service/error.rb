@@ -4,5 +4,8 @@ class RecalculateGameScoreService
     # Attempt to update finished game.
     class CompletedGameUpdateFailure < Error
     end
+
+    class IncorrectAttributeFormat < Error
+    end
   end
 end

@@ -1,9 +1,14 @@
 class V1::GamesController < ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :render_record_not_found
 
   def create
     game = Game.create(game_parameters)
 
-    render_game(game)
+    if game.persisted?
+      render_game(game)
+    else
+      render json: { errors: game.errors.full_messages.join(' ,') }, status: :bad_request
+    end
   end
 
   def show
@@ -11,15 +16,22 @@ class V1::GamesController < ApplicationController
   end
 
   def update
-    game.update(frames_attributes: frame_parameters)
+    service = RecalculateGameScoreService
 
-    render_game(game.reload)
+    begin
+      service.new(game, params[:knocked_pins_count]).perform
+      render_game(game.reload)
+    rescue service::Error::IncorrectAttributeFormat => e
+      render json: { errors: e.message }, status: 400
+    rescue service::Error::CompletedGameUpdateFailure => e
+      render json: { errors: e.message }, status: 409
+    end
   end
 
   protected
 
-  def frame_parameters
-    params.require(:frame).permit(:knocked_pins_count)
+  def render_record_not_found(error)
+    render json: { errors: error.message }, status: 404
   end
 
   def game
