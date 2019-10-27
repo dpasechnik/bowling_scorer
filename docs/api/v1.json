@@ -1,0 +1,199 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Bowling scorer",
+    "description": "Bowling score calucation API."
+  },
+  "host": "localhost:3000",
+  "basePath": "/v1",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/game": {
+      "get": {
+        "description": "Returns information about game current score.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "type": "integer",
+            "description": "ID of the game."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "game response",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "404": {
+            "description": "game not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates new game.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "body",
+            "description": "New game name.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "pet response",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "400": {
+            "description": "unable to create game, most probably because of duplicate name.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Recalculates the score of the game, sets the result of the latest roll.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "description": "Sets the result of the latest roll and recalculates total score of the game.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "knocked_pins_count"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Game ID."
+                },
+                "knocked_pins_count": {
+                  "type": "integer",
+                  "description": "The number of knocked pins for roll."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "correct response.",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "400": {
+            "description": "unable to update the game because of incorrect attributes format.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "Unable to update completed game.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Error": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Frame": {
+      "type": "object",
+      "properties": {
+        "strike": {
+          "type": "boolean"
+        },
+        "spare": {
+          "type": "boolean"
+        },
+        "bonus_roll_score": {
+          "type": "integer"
+        },
+        "first_roll_score": {
+          "type": "integer"
+        },
+        "second_roll_score": {
+          "type": "integer"
+        },
+        "total_score": {
+          "type": "integer"
+        }
+      }
+    },
+    "Game": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "total_score": {
+          "type": "integer"
+        },
+        "frames": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Frame"
+          }
+        }
+      }
+    }
+  }
+}

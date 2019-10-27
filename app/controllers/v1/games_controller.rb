@@ -22,16 +22,16 @@ class V1::GamesController < ApplicationController
       service.new(game, params[:knocked_pins_count]).perform
       render_game(game.reload)
     rescue service::Error::IncorrectAttributeFormat => e
-      render json: { errors: e.message }, status: 400
+      render json: { errors: e.message }, status: :bad_request
     rescue service::Error::CompletedGameUpdateFailure => e
-      render json: { errors: e.message }, status: 409
+      render json: { errors: e.message }, status: :conflict
     end
   end
 
   protected
 
   def render_record_not_found(error)
-    render json: { errors: error.message }, status: 404
+    render json: { errors: error.message }, status: :not_found
   end
 
   def game

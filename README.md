@@ -37,3 +37,6 @@ Logic details
 
 For background information, please see http://en.wikipedia.org/wiki/Ten-pin_bowling
 ```
+
+API documentation:
+    http://localhost:3000/index.html
