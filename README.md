@@ -38,5 +38,21 @@ Logic details
 For background information, please see http://en.wikipedia.org/wiki/Ten-pin_bowling
 ```
 
+Implementation notes:
+
+ - I've decided to stick with `sqlite` during development as i didn't utilize specific `postgres` features.
+ - I think 'sanity checks' and high-level testing of edge cases is enough here so i didn't go through all cases. 
+ - API documentation should be accessible only for development/staging environment, i've pretended that project is
+   accessible only via local network. 
+ 
+Setup:
+
+```
+rake db:create
+rake db:migrate
+rspec
+rails s
+```
+
 API documentation:
     http://localhost:3000/index.html
